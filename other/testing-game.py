@@ -38,5 +38,12 @@ for root, dirs, files in os.walk(args.directory):
             except:
                 'Could not open file: ' + absfile
 
+total_tests = 0
+for name in names:
+    total_tests += names[name]
+
+print "Total Tests: %(t)d" % { 't' : total_tests }
+print "-------------------------------------------"
 for t in sorted(names.items(), key=lambda x: x[1], reverse = True):
-    print t[0], t[1]
+    percentage = (float(t[1]) / float(total_tests)) * 100.0
+    print "%(n)s, %(t)d (%(p).2f%%)" % { 'n' : t[0], 't' : t[1], 'p' : percentage }

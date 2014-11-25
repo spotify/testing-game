@@ -38,4 +38,5 @@ for root, dirs, files in os.walk(args.directory):
             except:
                 'Could not open file: ' + absfile
 
-print names
+for t in sorted(names.items(), key=lambda x: x[1], reverse = True):
+    print t[0], t[1]

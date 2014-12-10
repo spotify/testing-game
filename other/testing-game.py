@@ -44,6 +44,7 @@ for name in names:
 
 print "Total Tests: %(t)d" % { 't' : total_tests }
 print "-------------------------------------------"
-for t in sorted(names.items(), key=lambda x: x[1], reverse = True):
+sorted_list = sorted(names.items(), key=lambda x: x[1], reverse = True)
+for t in sorted_list:
     percentage = (float(t[1]) / float(total_tests)) * 100.0
-    print "%(n)s, %(t)d (%(p).2f%%)" % { 'n' : t[0], 't' : t[1], 'p' : percentage }
+    print "%(i)d. %(n)s, %(t)d (%(p).2f%%)" % { 'i': sorted_list.index(t) + 1, 'n' : t[0], 't' : t[1], 'p' : percentage }

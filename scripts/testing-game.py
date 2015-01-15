@@ -35,6 +35,22 @@ for root, dirs, files in os.walk(args.directory):
                                 name = ' '.join(name_components)
                                 name_count = names.get(name, 0)
                                 names[name] = name_count + 1
+        elif fileextension == '.java' and filename.endswith('Test'):
+            try:
+                with open(absfile) as sourcefile:
+                    source = sourcefile.read()
+                    p = subprocess.Popen(['git', 'blame', absfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    out, err = p.communicate()
+                    
+                    for blame_line in out.splitlines():
+                        if blame_line.replace(' ', '').find('publicvoidtest') != -1:
+                            blame_info = blame_line[blame_line.find('(')+1:]
+                            blame_info = blame_info[:blame_info.find(')')]
+                            blame_components = blame_info.split()
+                            name_components = blame_components[:len(blame_components)-4]
+                            name = ' '.join(name_components)
+                            name_count = names.get(name, 0)
+                            names[name] = name_count + 1
             except:
                 'Could not open file: ' + absfile
 

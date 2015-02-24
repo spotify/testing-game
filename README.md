@@ -16,7 +16,7 @@ The script uses the current working directory to find files it could possibly re
 Run "python testing-game.py" in the repository of your choosing.
 
 ## CONTRIBUTION
-Contributions are welcomed, have a look at the [CONTRIBUTING.md](https://github.com/spotify/SPTDataLoader/blob/master/CONTRIBUTING.md) document for more information.
+Contributions are welcomed, have a look at the [CONTRIBUTING.md](https://github.com/spotify/testing-game/blob/master/CONTRIBUTING.md) document for more information.
 
 ## CREDITS
 * Will Sackfield

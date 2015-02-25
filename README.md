@@ -41,7 +41,7 @@ Yes please! Contributions are always welcomed, have a look at the [CONTRIBUTING.
 
 ## Credits
 
-* See [the project’s contributors](https://github.com/spotify/testing-game/graphs/contributors) page.
+See [the project’s contributors](https://github.com/spotify/testing-game/graphs/contributors) page.
 
 ## License
 

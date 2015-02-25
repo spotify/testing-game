@@ -12,7 +12,6 @@ Total Tests: 2694
 5. Calvin Harris, 147 (5.46%)
 
 ```
->>>>>>> Format and love to the README file
 
 ## Background
 
@@ -40,7 +39,7 @@ Yes please! Contributions are always welcomed, have a look at the [CONTRIBUTING.
 
 ## Credits
 
-* See [the projects contributors](https://github.com/spotify/testing-game/graphs/contributors) page.
+* See [the project's contributors](https://github.com/spotify/testing-game/graphs/contributors) page.
 
 ## License
 

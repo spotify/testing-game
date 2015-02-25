@@ -17,7 +17,7 @@ Total Tests: 2694
 
 ## Background
 
-This script was made to "gameify" testing at Spotify and to continue encouraging Test-Driven Development. 
+This script was made to “gameify” testing at Spotify and to continue encouraging Test-Driven Development. 
 
 ## How It Works
 

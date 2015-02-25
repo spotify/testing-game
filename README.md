@@ -2,7 +2,7 @@
 
 Welcome to the Testing Game! A simple script that counts the number of iOS or Android unit tests in the current working directory within a git repository, and showcases a ranking based on the percentage each developer has written.
 
-**Example:**
+**Example output:**
 
 ```shell
 Total Tests: 2694

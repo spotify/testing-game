@@ -11,7 +11,11 @@ This script was made to “gameify” testing at Spotify for cultural purposes :
 The script uses the current working directory to find files it could possibly read (such as .m, .mm and .java) and performs a git blame on these files in order to match tests written to the developers that wrote them. The owner of the method name of the test is considered the developer that wrote that.
 
 ## USAGE
-Run "python testing-game.py" in the repository of your choosing.
+Run the script in a repository of your choosing:
+
+```shell
+python testing-game.py
+```
 
 ## CONTRIBUTION
 Contributions are welcomed, have a look at the [CONTRIBUTING.md](https://github.com/spotify/testing-game/blob/master/CONTRIBUTING.md) document for more information.

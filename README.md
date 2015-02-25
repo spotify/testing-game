@@ -2,7 +2,7 @@
 The “testing-game” project counts the number of iOS and Android tests in a current working directory within a git repository. This is then used to show the percentage of tests each contributing developer has written.
 
 ## LICENSE
-[Apache 2](http://www.apache.org/licenses/LICENSE-2.0)
+The project is licensed under [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
 ## BACKGROUND
 This script was made to “gameify” testing at Spotify for cultural purposes :smiley:

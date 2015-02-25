@@ -1,6 +1,4 @@
 # testing-game
-
-## DESCRIPTION
 A pointless project I did to showcase the fact that I wrote more tests than anyone else. It counts the number of iOS and Android tests in a current working directory within a git repository, and the percentage of the tests each developer writes.
 
 ## LICENSE

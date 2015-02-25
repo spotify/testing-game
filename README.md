@@ -1,8 +1,8 @@
-# :star: THE Testing Game :star:
+# :star: The Testing Game :star:
 
 Welcome to the Testing Game! A simple script that counts the number of iOS or Android unit tests in the current working directory within a git repository, and showcases a ranking based on the percentage each developer has written.
 
-**Example:**
+**Example output:**
 
 ```shell
 Total Tests: 2694
@@ -17,7 +17,7 @@ Total Tests: 2694
 
 ## Background
 
-This script was made to "gameify" testing at Spotify and to continue encouraging Test-Driven Development. 
+This script was made to “gameify” testing at Spotify and to continue encouraging Test-Driven Development. 
 
 ## How It Works
 
@@ -32,7 +32,7 @@ The owner of the method name of the test is considered the developer that wrote 
     > python testing-game.py
     ```
 
-2. Mention that you write most unit units of your project on every meeting (no, don't do that).
+2. Mention that you write most unit units of your project on every meeting (no, don’t do that).
 
 
 ## Contribution
@@ -41,7 +41,7 @@ Yes please! Contributions are always welcomed, have a look at the [CONTRIBUTING.
 
 ## Credits
 
-* See [the project's contributors](https://github.com/spotify/testing-game/graphs/contributors) page.
+See [the project’s contributors](https://github.com/spotify/testing-game/graphs/contributors) page.
 
 ## License
 

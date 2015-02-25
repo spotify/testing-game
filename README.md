@@ -32,7 +32,7 @@ The owner of the method name of the test is considered the developer that wrote 
     > python testing-game.py
     ```
 
-2. Mention that you write most unit units of your project on every meeting (no, don't do that).
+2. Mention that you write most unit units of your project on every meeting (no, don’t do that).
 
 
 ## Contribution
@@ -41,7 +41,7 @@ Yes please! Contributions are always welcomed, have a look at the [CONTRIBUTING.
 
 ## Credits
 
-* See [the project's contributors](https://github.com/spotify/testing-game/graphs/contributors) page.
+* See [the project’s contributors](https://github.com/spotify/testing-game/graphs/contributors) page.
 
 ## License
 

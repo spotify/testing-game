@@ -21,5 +21,4 @@ python testing-game.py
 Contributions are welcomed, have a look at the [CONTRIBUTING.md](https://github.com/spotify/testing-game/blob/master/CONTRIBUTING.md) document for more information.
 
 ## CREDITS
-* Will Sackfield
-* Adam Price
+See [the projects contributors](https://github.com/spotify/testing-game/graphs/contributors) page.

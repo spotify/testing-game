@@ -78,12 +78,30 @@ def find_boost_tests(blame_lines, names, source):
     return names
 
 
+def find_nose_tests(blame_lines, names, source):
+    for blame_line in blame_lines:
+        separator = blame_line.find(')')
+        blame_code_nospaces = blame_line[separator+1:]
+        blame_code_nospaces = blame_code_nospaces.replace(' ', '')
+        blame_code_nospaces = blame_code_nospaces.replace('\t', '')
+        if blame_code_nospaces.startswith('deftest_'):
+            blame_info = blame_line[:separator]
+            name = blame_info[blame_info.find('<')+1:blame_info.find('@')]
+            name_count = names.get(name, 0)
+            names[name] = name_count + 1
+    return names
+
+
 def find_git_status(directory):
     names = {}
     objc_extensions = ['.m', '.mm']
     java_extensions = ['.java']
     cpp_extensions = ['.cpp']
-    valid_extensions = objc_extensions + java_extensions + cpp_extensions
+    python_extensions = ['.py']
+    valid_extensions = objc_extensions
+    valid_extensions.extend(java_extensions)
+    valid_extensions.extend(cpp_extensions)
+    valid_extensions.extend(python_extensions)
     for root, dirs, files in os.walk(directory):
         for name in files:
             filename, fileextension = os.path.splitext(name)
@@ -107,6 +125,8 @@ def find_git_status(directory):
                             names = find_boost_tests(blame_lines,
                                                      names,
                                                      source)
+                        elif fileextension in python_extensions:
+                            names = find_nose_tests(blame_lines, names, source)
                 except:
                     'Could not open file: ' + absfile
 

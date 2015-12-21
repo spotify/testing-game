@@ -59,11 +59,31 @@ def find_java_tests(blame_lines, names, source):
     return names
 
 
+def find_boost_tests(blame_lines, names, source):
+    test_cases = ['BOOST_AUTO_TEST_CASE', 'BOOST_FIXTURE_TEST_CASE']
+    for blame_line in blame_lines:
+        contains_test_case = False
+        for test_case in test_cases:
+            contains_test_case |= blame_line.find(test_case) != -1
+            if contains_test_case:
+                break
+        if contains_test_case:
+            blame_info = blame_line[blame_line.find('(')+1:]
+            blame_info = blame_info[:blame_info.find(')')]
+            blame_components = blame_info.split()
+            name_components = blame_components[:len(blame_components)-4]
+            name = ' '.join(name_components)
+            name_count = names.get(name, 0)
+            names[name] = name_count + 1
+    return names
+
+
 def find_git_status(directory):
     names = {}
     objc_extensions = ['.m', '.mm']
     java_extensions = ['.java']
-    valid_extensions = objc_extensions + java_extensions
+    cpp_extensions = ['.cpp']
+    valid_extensions = objc_extensions + java_extensions + cpp_extensions
     for root, dirs, files in os.walk(directory):
         for name in files:
             filename, fileextension = os.path.splitext(name)
@@ -83,6 +103,10 @@ def find_git_status(directory):
                                                       source)
                         elif fileextension in java_extensions:
                             names = find_java_tests(blame_lines, names, source)
+                        elif fileextension in cpp_extensions:
+                            names = find_boost_tests(blame_lines,
+                                                     names,
+                                                     source)
                 except:
                     'Could not open file: ' + absfile
 

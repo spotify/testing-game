@@ -1,6 +1,6 @@
 # :star: The Testing Game :star:
 
-Welcome to the Testing Game! A simple script that counts the number of iOS or Android unit tests in the current working directory within a git repository, and showcases a ranking based on the percentage each developer has written.
+Welcome to the Testing Game! A simple script that counts the number of Objective-C, Java or C++ unit tests in the current working directory within a git repository, and showcases a ranking based on the percentage each developer has written.
 
 **Example output:**
 

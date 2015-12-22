@@ -27,8 +27,15 @@ import os
 import subprocess
 
 
-def find_xctest_tests(blame_lines, names, source):
-    if source.find('XCTestCase') != -1:
+def find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
+    xctest_identifiers = ['XCTestCase']
+    xctest_identifiers.extend(xctestsuperclasses)
+    contains_test_case = False
+    for xctest_identifier in xctest_identifiers:
+        contains_test_case |= source.find(xctest_identifier) != -1
+        if contains_test_case:
+            break
+    if contains_test_case:
         for blame_line in blame_lines:
             if blame_line.replace(' ', '').find('-(void)test') != -1:
                 blame_info = blame_line[blame_line.find('(')+1:]
@@ -92,7 +99,7 @@ def find_nose_tests(blame_lines, names, source):
     return names
 
 
-def find_git_status(directory):
+def find_git_status(directory, xctestsuperclasses):
     names = {}
     objc_extensions = ['.m', '.mm']
     java_extensions = ['.java']
@@ -118,7 +125,8 @@ def find_git_status(directory):
                         if fileextension in objc_extensions:
                             names = find_xctest_tests(blame_lines,
                                                       names,
-                                                      source)
+                                                      source,
+                                                      xctestsuperclasses)
                         elif fileextension in java_extensions:
                             names = find_java_tests(blame_lines, names, source)
                         elif fileextension in cpp_extensions:
@@ -137,8 +145,13 @@ if __name__ == "__main__":
                         help='The directory to search for files in',
                         required=False,
                         default=os.getcwd())
+    parser.add_argument('-x',
+                        '--xctestsuperclasses',
+                        help='A comma separated list of XCTest super classes',
+                        required=False,
+                        default=[])
     args = parser.parse_args()
-    names = find_git_status(args.directory)
+    names = find_git_status(args.directory, args.xctestsuperclasses)
     total_tests = 0
     for name in names:
         total_tests += names[name]

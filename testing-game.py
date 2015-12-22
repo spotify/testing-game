@@ -152,7 +152,8 @@ if __name__ == "__main__":
                         required=False,
                         default='')
     args = parser.parse_args()
-    names = find_git_status(args.directory, args.xctestsuperclasses.split(','))
+    xctest_superclasses = args.xctestsuperclasses.replace(' ', '').split(',')
+    names = find_git_status(args.directory, xctest_superclasses)
     total_tests = 0
     for name in names:
         total_tests += names[name]

@@ -150,9 +150,9 @@ if __name__ == "__main__":
                         '--xctestsuperclasses',
                         help='A comma separated list of XCTest super classes',
                         required=False,
-                        default=[])
+                        default='')
     args = parser.parse_args()
-    names = find_git_status(args.directory, args.xctestsuperclasses)
+    names = find_git_status(args.directory, args.xctestsuperclasses.split(','))
     total_tests = 0
     for name in names:
         total_tests += names[name]

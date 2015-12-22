@@ -137,6 +137,7 @@ def find_git_status(directory, xctestsuperclasses):
                             names = find_nose_tests(blame_lines, names, source)
                 except:
                     'Could not open file: ' + absfile
+    return names
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

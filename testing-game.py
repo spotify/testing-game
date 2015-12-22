@@ -103,7 +103,7 @@ def find_git_status(directory, xctestsuperclasses):
     names = {}
     objc_extensions = ['.m', '.mm']
     java_extensions = ['.java']
-    cpp_extensions = ['.cpp']
+    cpp_extensions = ['.cpp', '.mm']
     python_extensions = ['.py']
     valid_extensions = objc_extensions
     valid_extensions.extend(java_extensions)
@@ -127,13 +127,13 @@ def find_git_status(directory, xctestsuperclasses):
                                                       names,
                                                       source,
                                                       xctestsuperclasses)
-                        elif fileextension in java_extensions:
+                        if fileextension in java_extensions:
                             names = find_java_tests(blame_lines, names, source)
-                        elif fileextension in cpp_extensions:
+                        if fileextension in cpp_extensions:
                             names = find_boost_tests(blame_lines,
                                                      names,
                                                      source)
-                        elif fileextension in python_extensions:
+                        if fileextension in python_extensions:
                             names = find_nose_tests(blame_lines, names, source)
                 except:
                     'Could not open file: ' + absfile

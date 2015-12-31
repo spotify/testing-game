@@ -25,7 +25,7 @@ import os
 import subprocess
 
 
-def find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
+def _find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
     """
     Finds the number of XCTest cases per user.
 
@@ -61,7 +61,7 @@ def find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
     return names
 
 
-def find_java_tests(blame_lines, names, source):
+def _find_java_tests(blame_lines, names, source):
     """
     Finds the number of Java test cases per user. This will find tests both
     with the @Test annotation and the standard test methods.
@@ -93,7 +93,7 @@ def find_java_tests(blame_lines, names, source):
     return names
 
 
-def find_boost_tests(blame_lines, names, source):
+def _find_boost_tests(blame_lines, names, source):
     """
     Finds the number of Boost test cases per user.
 
@@ -125,7 +125,7 @@ def find_boost_tests(blame_lines, names, source):
     return names
 
 
-def find_nose_tests(blame_lines, names, source):
+def _find_nose_tests(blame_lines, names, source):
     """
     Finds the number of python test cases per user.
 
@@ -152,7 +152,7 @@ def find_nose_tests(blame_lines, names, source):
     return names
 
 
-def find_git_status(directory, xctestsuperclasses):
+def _find_git_status(directory, xctestsuperclasses):
     """
     Finds the number of tests per user within a given directory. Note that this
     will only work on the root git subdirectory, submodules will not be
@@ -189,18 +189,22 @@ def find_git_status(directory, xctestsuperclasses):
                         out, err = p.communicate()
                         blame_lines = out.splitlines()
                         if fileextension in objc_extensions:
-                            names = find_xctest_tests(blame_lines,
-                                                      names,
-                                                      source,
-                                                      xctestsuperclasses)
+                            names = _find_xctest_tests(blame_lines,
+                                                       names,
+                                                       source,
+                                                       xctestsuperclasses)
                         if fileextension in java_extensions:
-                            names = find_java_tests(blame_lines, names, source)
-                        if fileextension in cpp_extensions:
-                            names = find_boost_tests(blame_lines,
+                            names = _find_java_tests(blame_lines,
                                                      names,
                                                      source)
+                        if fileextension in cpp_extensions:
+                            names = _find_boost_tests(blame_lines,
+                                                      names,
+                                                      source)
                         if fileextension in python_extensions:
-                            names = find_nose_tests(blame_lines, names, source)
+                            names = _find_nose_tests(blame_lines,
+                                                     names,
+                                                     source)
                 except:
                     'Could not open file: ' + absfile
     return names
@@ -219,7 +223,7 @@ if __name__ == "__main__":
                         default='')
     args = parser.parse_args()
     xctest_superclasses = args.xctestsuperclasses.replace(' ', '').split(',')
-    names = find_git_status(args.directory, xctest_superclasses)
+    names = _find_git_status(args.directory, xctest_superclasses)
     total_tests = 0
     for name in names:
         total_tests += names[name]

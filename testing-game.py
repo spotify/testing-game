@@ -26,6 +26,21 @@ import subprocess
 
 
 def find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
+    """
+    Finds the number of XCTest cases per user.
+
+    Args:
+        blame_lines: An array where each index is a string containing the git
+        blame line.
+        names: The current dictionary containing the usernames as a key and the
+        number of tests as a value.
+        source: A string containing the raw source code for the file.
+        xctestsuperclasses: An array containing alternative superclasses for
+        the xctest framework.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
     xctest_identifiers = ['XCTestCase']
     xctest_identifiers.extend(xctestsuperclasses)
     contains_test_case = False
@@ -47,6 +62,20 @@ def find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
 
 
 def find_java_tests(blame_lines, names, source):
+    """
+    Finds the number of Java test cases per user. This will find tests both
+    with the @Test annotation and the standard test methods.
+
+    Args:
+        blame_lines: An array where each index is a string containing the git
+        blame line.
+        names: The current dictionary containing the usernames as a key and the
+        number of tests as a value.
+        source: A string containing the raw source code for the file.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
     next_is_test = False
     for blame_line in blame_lines:
         separator = blame_line.find(')')
@@ -65,6 +94,19 @@ def find_java_tests(blame_lines, names, source):
 
 
 def find_boost_tests(blame_lines, names, source):
+    """
+    Finds the number of Boost test cases per user.
+
+    Args:
+        blame_lines: An array where each index is a string containing the git
+        blame line.
+        names: The current dictionary containing the usernames as a key and the
+        number of tests as a value.
+        source: A string containing the raw source code for the file.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
     test_cases = ['BOOST_AUTO_TEST_CASE', 'BOOST_FIXTURE_TEST_CASE']
     for blame_line in blame_lines:
         contains_test_case = False
@@ -84,6 +126,19 @@ def find_boost_tests(blame_lines, names, source):
 
 
 def find_nose_tests(blame_lines, names, source):
+    """
+    Finds the number of python test cases per user.
+
+    Args:
+        blame_lines: An array where each index is a string containing the git
+        blame line.
+        names: The current dictionary containing the usernames as a key and the
+        number of tests as a value.
+        source: A string containing the raw source code for the file.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
     for blame_line in blame_lines:
         separator = blame_line.find(')')
         blame_code_nospaces = blame_line[separator+1:]
@@ -98,6 +153,19 @@ def find_nose_tests(blame_lines, names, source):
 
 
 def find_git_status(directory, xctestsuperclasses):
+    """
+    Finds the number of tests per user within a given directory. Note that this
+    will only work on the root git subdirectory, submodules will not be
+    counted.
+
+    Args:
+        directory: The path to the directory to scan.
+        xctestsuperclasses: An array of strings containing names for xctest
+        superclasses.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
     names = {}
     objc_extensions = ['.m', '.mm']
     java_extensions = ['.java']

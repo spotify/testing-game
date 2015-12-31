@@ -1,3 +1,5 @@
+# !/usr/bin/python
+# -*- coding: utf-8 -*-
 '''
  * Copyright (c) 2015 Spotify AB.
  *
@@ -18,10 +20,6 @@
  * specific language governing permissions and limitations
  * under the License.
 '''
-
-# !/usr/bin/python
-# -*- coding: utf-8 -*-
-
 import argparse
 import os
 import subprocess

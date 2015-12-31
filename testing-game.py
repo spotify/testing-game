@@ -209,7 +209,8 @@ def _find_git_status(directory, xctestsuperclasses):
                     'Could not open file: ' + absfile
     return names
 
-if __name__ == "__main__":
+
+def _main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d',
                         '--directory',
@@ -237,3 +238,6 @@ if __name__ == "__main__":
                                                    'n': t[0],
                                                    't': t[1],
                                                    'p': percentage}
+
+if __name__ == "__main__":
+    _main()

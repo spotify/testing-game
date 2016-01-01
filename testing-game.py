@@ -25,6 +25,22 @@ import os
 import subprocess
 
 
+def _find_name_from_blame(blame_line):
+    """
+    Finds the name of the committer of code given a blame line from git
+
+    Args:
+        blame_line: A string from the git output of the blame for a file.
+    Returns:
+        The username as a string of the user to blame
+    """
+    blame_info = blame_line[blame_line.find('(')+1:]
+    blame_info = blame_info[:blame_info.find(')')]
+    blame_components = blame_info.split()
+    name_components = blame_components[:len(blame_components)-4]
+    return ' '.join(name_components)
+
+
 def _find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
     """
     Finds the number of XCTest cases per user.
@@ -51,11 +67,7 @@ def _find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
     if contains_test_case:
         for blame_line in blame_lines:
             if blame_line.replace(' ', '').find('-(void)test') != -1:
-                blame_info = blame_line[blame_line.find('(')+1:]
-                blame_info = blame_info[:blame_info.find(')')]
-                blame_components = blame_info.split()
-                name_components = blame_components[:len(blame_components)-4]
-                name = ' '.join(name_components)
+                name = _find_name_from_blame(blame_line)
                 name_count = names.get(name, 0)
                 names[name] = name_count + 1
     return names
@@ -83,8 +95,7 @@ def _find_java_tests(blame_lines, names, source):
         blame_code_nospaces = blame_code_nospaces.replace(' ', '')
         blame_code_nospaces = blame_code_nospaces.replace('\t', '')
         if next_is_test or blame_code_nospaces.startswith('publicvoidtest'):
-            blame_info = blame_line[:separator]
-            name = blame_info[blame_info.find('<')+1:blame_info.find('@')]
+            name = _find_name_from_blame(blame_line)
             name_count = names.get(name, 0)
             names[name] = name_count + 1
             next_is_test = False
@@ -115,11 +126,7 @@ def _find_boost_tests(blame_lines, names, source):
             if contains_test_case:
                 break
         if contains_test_case:
-            blame_info = blame_line[blame_line.find('(')+1:]
-            blame_info = blame_info[:blame_info.find(')')]
-            blame_components = blame_info.split()
-            name_components = blame_components[:len(blame_components)-4]
-            name = ' '.join(name_components)
+            name = _find_name_from_blame(blame_line)
             name_count = names.get(name, 0)
             names[name] = name_count + 1
     return names
@@ -144,9 +151,8 @@ def _find_nose_tests(blame_lines, names, source):
         blame_code_nospaces = blame_line[separator+1:]
         blame_code_nospaces = blame_code_nospaces.replace(' ', '')
         blame_code_nospaces = blame_code_nospaces.replace('\t', '')
-        if blame_code_nospaces.startswith('deftest_'):
-            blame_info = blame_line[:separator]
-            name = blame_info[blame_info.find('<')+1:blame_info.find('@')]
+        if blame_code_nospaces.startswith('deftest'):
+            name = _find_name_from_blame(blame_line)
             name_count = names.get(name, 0)
             names[name] = name_count + 1
     return names
@@ -165,6 +171,9 @@ def _find_git_status(directory, xctestsuperclasses):
     Returns:
         A dictionary built off the names argument containing the usernames as a
         key and the number of tests as a value.
+
+    >>> _find_git_status('tests', 'SPTTestCase')
+    {'Will Sackfield': 6}
     """
     names = {}
     objc_extensions = ['.m', '.mm']

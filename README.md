@@ -1,4 +1,4 @@
-# :star: The Testing Game :star:
+# :star: The Testing Game 1.0 :star:
 
 Welcome to the Testing Game! A simple script that counts the number of Objective-C, Java, C++ or python unit tests in the current working directory within a git repository, and showcases a ranking based on the percentage each developer has written.
 
@@ -23,6 +23,13 @@ This script was made to “gameify” testing at Spotify and to continue encoura
 
 The script uses the current working directory to find files it could possibly read (such as `.m`, `.mm` and `.java` files) and performs a `git blame` on these files in order to match tests written to the developers that wrote them. 
 The owner of the method name of the test is considered the developer that wrote it.
+
+## Dependencies
+
+* [python 2.7.10](https://www.python.org/downloads/release/python-2710/) (for running the script)
+* [git 2.6.1](https://git-scm.com/) (for finding the blame information for a given file)
+
+The script should run on any operating system containing these two dependencies.
 
 ## Usage
 

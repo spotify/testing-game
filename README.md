@@ -36,7 +36,7 @@ The script should run on any operating system containing these two dependencies.
 1. Run the Python script from your repository:
 
     ```shell
-    > python testing-game.py
+    > python testinggame.py
     ```
 
 2. Mention that you write most unit units of your project on every meeting (no, don’t do that).

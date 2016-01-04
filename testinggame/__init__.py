@@ -1,3 +1,5 @@
+# !/usr/bin/python
+# -*- coding: utf-8 -*-
 '''
  * Copyright (c) 2015 Spotify AB.
  *
@@ -18,16 +20,43 @@
  * specific language governing permissions and limitations
  * under the License.
 '''
-
-# !/usr/bin/python
-# -*- coding: utf-8 -*-
-
 import argparse
 import os
 import subprocess
 
 
-def find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
+def _find_name_from_blame(blame_line):
+    """
+    Finds the name of the committer of code given a blame line from git
+
+    Args:
+        blame_line: A string from the git output of the blame for a file.
+    Returns:
+        The username as a string of the user to blame
+    """
+    blame_info = blame_line[blame_line.find('(')+1:]
+    blame_info = blame_info[:blame_info.find(')')]
+    blame_components = blame_info.split()
+    name_components = blame_components[:len(blame_components)-4]
+    return ' '.join(name_components)
+
+
+def _find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
+    """
+    Finds the number of XCTest cases per user.
+
+    Args:
+        blame_lines: An array where each index is a string containing the git
+        blame line.
+        names: The current dictionary containing the usernames as a key and the
+        number of tests as a value.
+        source: A string containing the raw source code for the file.
+        xctestsuperclasses: An array containing alternative superclasses for
+        the xctest framework.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
     xctest_identifiers = ['XCTestCase']
     xctest_identifiers.extend(xctestsuperclasses)
     contains_test_case = False
@@ -38,17 +67,27 @@ def find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
     if contains_test_case:
         for blame_line in blame_lines:
             if blame_line.replace(' ', '').find('-(void)test') != -1:
-                blame_info = blame_line[blame_line.find('(')+1:]
-                blame_info = blame_info[:blame_info.find(')')]
-                blame_components = blame_info.split()
-                name_components = blame_components[:len(blame_components)-4]
-                name = ' '.join(name_components)
+                name = _find_name_from_blame(blame_line)
                 name_count = names.get(name, 0)
                 names[name] = name_count + 1
     return names
 
 
-def find_java_tests(blame_lines, names, source):
+def _find_java_tests(blame_lines, names, source):
+    """
+    Finds the number of Java test cases per user. This will find tests both
+    with the @Test annotation and the standard test methods.
+
+    Args:
+        blame_lines: An array where each index is a string containing the git
+        blame line.
+        names: The current dictionary containing the usernames as a key and the
+        number of tests as a value.
+        source: A string containing the raw source code for the file.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
     next_is_test = False
     for blame_line in blame_lines:
         separator = blame_line.find(')')
@@ -56,8 +95,7 @@ def find_java_tests(blame_lines, names, source):
         blame_code_nospaces = blame_code_nospaces.replace(' ', '')
         blame_code_nospaces = blame_code_nospaces.replace('\t', '')
         if next_is_test or blame_code_nospaces.startswith('publicvoidtest'):
-            blame_info = blame_line[:separator]
-            name = blame_info[blame_info.find('<')+1:blame_info.find('@')]
+            name = _find_name_from_blame(blame_line)
             name_count = names.get(name, 0)
             names[name] = name_count + 1
             next_is_test = False
@@ -66,7 +104,20 @@ def find_java_tests(blame_lines, names, source):
     return names
 
 
-def find_boost_tests(blame_lines, names, source):
+def _find_boost_tests(blame_lines, names, source):
+    """
+    Finds the number of Boost test cases per user.
+
+    Args:
+        blame_lines: An array where each index is a string containing the git
+        blame line.
+        names: The current dictionary containing the usernames as a key and the
+        number of tests as a value.
+        source: A string containing the raw source code for the file.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
     test_cases = ['BOOST_AUTO_TEST_CASE', 'BOOST_FIXTURE_TEST_CASE']
     for blame_line in blame_lines:
         contains_test_case = False
@@ -75,31 +126,55 @@ def find_boost_tests(blame_lines, names, source):
             if contains_test_case:
                 break
         if contains_test_case:
-            blame_info = blame_line[blame_line.find('(')+1:]
-            blame_info = blame_info[:blame_info.find(')')]
-            blame_components = blame_info.split()
-            name_components = blame_components[:len(blame_components)-4]
-            name = ' '.join(name_components)
+            name = _find_name_from_blame(blame_line)
             name_count = names.get(name, 0)
             names[name] = name_count + 1
     return names
 
 
-def find_nose_tests(blame_lines, names, source):
+def _find_nose_tests(blame_lines, names, source):
+    """
+    Finds the number of python test cases per user.
+
+    Args:
+        blame_lines: An array where each index is a string containing the git
+        blame line.
+        names: The current dictionary containing the usernames as a key and the
+        number of tests as a value.
+        source: A string containing the raw source code for the file.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
     for blame_line in blame_lines:
         separator = blame_line.find(')')
         blame_code_nospaces = blame_line[separator+1:]
         blame_code_nospaces = blame_code_nospaces.replace(' ', '')
         blame_code_nospaces = blame_code_nospaces.replace('\t', '')
-        if blame_code_nospaces.startswith('deftest_'):
-            blame_info = blame_line[:separator]
-            name = blame_info[blame_info.find('<')+1:blame_info.find('@')]
+        if blame_code_nospaces.startswith('deftest'):
+            name = _find_name_from_blame(blame_line)
             name_count = names.get(name, 0)
             names[name] = name_count + 1
     return names
 
 
-def find_git_status(directory, xctestsuperclasses):
+def _find_git_status(directory, xctestsuperclasses):
+    """
+    Finds the number of tests per user within a given directory. Note that this
+    will only work on the root git subdirectory, submodules will not be
+    counted.
+
+    Args:
+        directory: The path to the directory to scan.
+        xctestsuperclasses: An array of strings containing names for xctest
+        superclasses.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+
+    >>> _find_git_status('tests', 'SPTTestCase')
+    {'Will Sackfield': 6}
+    """
     names = {}
     objc_extensions = ['.m', '.mm']
     java_extensions = ['.java']
@@ -123,23 +198,28 @@ def find_git_status(directory, xctestsuperclasses):
                         out, err = p.communicate()
                         blame_lines = out.splitlines()
                         if fileextension in objc_extensions:
-                            names = find_xctest_tests(blame_lines,
-                                                      names,
-                                                      source,
-                                                      xctestsuperclasses)
+                            names = _find_xctest_tests(blame_lines,
+                                                       names,
+                                                       source,
+                                                       xctestsuperclasses)
                         if fileextension in java_extensions:
-                            names = find_java_tests(blame_lines, names, source)
-                        if fileextension in cpp_extensions:
-                            names = find_boost_tests(blame_lines,
+                            names = _find_java_tests(blame_lines,
                                                      names,
                                                      source)
+                        if fileextension in cpp_extensions:
+                            names = _find_boost_tests(blame_lines,
+                                                      names,
+                                                      source)
                         if fileextension in python_extensions:
-                            names = find_nose_tests(blame_lines, names, source)
+                            names = _find_nose_tests(blame_lines,
+                                                     names,
+                                                     source)
                 except:
                     'Could not open file: ' + absfile
     return names
 
-if __name__ == "__main__":
+
+def _main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d',
                         '--directory',
@@ -151,9 +231,18 @@ if __name__ == "__main__":
                         help='A comma separated list of XCTest super classes',
                         required=False,
                         default='')
+    parser.add_argument('-v',
+                        '--version',
+                        help='Prints the version of testing game',
+                        required=False,
+                        default=False,
+                        action='store_true')
     args = parser.parse_args()
+    if args.version:
+        print 'testing game version 1.0.0'
+        return
     xctest_superclasses = args.xctestsuperclasses.replace(' ', '').split(',')
-    names = find_git_status(args.directory, xctest_superclasses)
+    names = _find_git_status(args.directory, xctest_superclasses)
     total_tests = 0
     for name in names:
         total_tests += names[name]
@@ -167,3 +256,6 @@ if __name__ == "__main__":
                                                    'n': t[0],
                                                    't': t[1],
                                                    'p': percentage}
+
+if __name__ == "__main__":
+    _main()

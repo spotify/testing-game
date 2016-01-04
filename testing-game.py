@@ -231,7 +231,16 @@ def _main():
                         help='A comma separated list of XCTest super classes',
                         required=False,
                         default='')
+    parser.add_argument('-v',
+                        '--version',
+                        help='Prints the version of testing game',
+                        required=False,
+                        default=False,
+                        action='store_true')
     args = parser.parse_args()
+    if args.version:
+        print 'testing game version 1.0.0'
+        return
     xctest_superclasses = args.xctestsuperclasses.replace(' ', '').split(',')
     names = _find_git_status(args.directory, xctest_superclasses)
     total_tests = 0

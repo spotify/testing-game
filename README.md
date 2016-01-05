@@ -26,10 +26,10 @@ The owner of the method name of the test is considered the developer that wrote 
 
 ## Dependencies
 
-* [python 2.7.10](https://www.python.org/downloads/release/python-2710/) (for running the script)
-* [git 2.6.1](https://git-scm.com/) (for finding the blame information for a given file)
+* [python 2.7.9](https://www.python.org/downloads/release/python-2710/) (for running the script)
+* [git 2.5.3](https://git-scm.com/) (for finding the blame information for a given file)
 
-The script should run on any operating system containing these two dependencies.
+The script should run on any operating system containing these two dependencies. The script may operate on lower python or git versions, but there is a certain of amount of buyer beware here.
 
 ## Usage
 

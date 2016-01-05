@@ -23,6 +23,7 @@ This script was made to “gameify” testing at Spotify and to continue encoura
 
 The script uses the current working directory to find files it could possibly read (such as `.m`, `.mm` and `.java` files) and performs a `git blame` on these files in order to match tests written to the developers that wrote them. 
 The owner of the method name of the test is considered the developer that wrote it.
+Note that since this script makes use of git, the file will need to be committed before it is counted. This will always look on the currently checked out branch.
 
 ## Dependencies
 

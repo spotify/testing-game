@@ -73,7 +73,7 @@ def _find_xctest_tests(blame_lines, names, source, xctestsuperclasses):
     return names
 
 
-def _find_java_tests(blame_lines, names, source):
+def _find_java_tests(blame_lines, names):
     """
     Finds the number of Java test cases per user. This will find tests both
     with the @Test annotation and the standard test methods.
@@ -83,7 +83,6 @@ def _find_java_tests(blame_lines, names, source):
         blame line.
         names: The current dictionary containing the usernames as a key and the
         number of tests as a value.
-        source: A string containing the raw source code for the file.
     Returns:
         A dictionary built off the names argument containing the usernames as a
         key and the number of tests as a value.
@@ -104,7 +103,7 @@ def _find_java_tests(blame_lines, names, source):
     return names
 
 
-def _find_boost_tests(blame_lines, names, source):
+def _find_boost_tests(blame_lines, names):
     """
     Finds the number of Boost test cases per user.
 
@@ -113,7 +112,6 @@ def _find_boost_tests(blame_lines, names, source):
         blame line.
         names: The current dictionary containing the usernames as a key and the
         number of tests as a value.
-        source: A string containing the raw source code for the file.
     Returns:
         A dictionary built off the names argument containing the usernames as a
         key and the number of tests as a value.
@@ -132,7 +130,7 @@ def _find_boost_tests(blame_lines, names, source):
     return names
 
 
-def _find_nose_tests(blame_lines, names, source):
+def _find_python_tests(blame_lines, names, source):
     """
     Finds the number of python test cases per user.
 
@@ -141,7 +139,6 @@ def _find_nose_tests(blame_lines, names, source):
         blame line.
         names: The current dictionary containing the usernames as a key and the
         number of tests as a value.
-        source: A string containing the raw source code for the file.
     Returns:
         A dictionary built off the names argument containing the usernames as a
         key and the number of tests as a value.
@@ -204,16 +201,13 @@ def _find_git_status(directory, xctestsuperclasses):
                                                        xctestsuperclasses)
                         if fileextension in java_extensions:
                             names = _find_java_tests(blame_lines,
-                                                     names,
-                                                     source)
+                                                     names)
                         if fileextension in cpp_extensions:
                             names = _find_boost_tests(blame_lines,
-                                                      names,
-                                                      source)
+                                                      names)
                         if fileextension in python_extensions:
-                            names = _find_nose_tests(blame_lines,
-                                                     names,
-                                                     source)
+                            names = _find_python_tests(blame_lines,
+                                                       names)
                 except:
                     'Could not open file: ' + absfile
     return names

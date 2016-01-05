@@ -23,23 +23,30 @@ This script was made to “gameify” testing at Spotify and to continue encoura
 
 The script uses the current working directory to find files it could possibly read (such as `.m`, `.mm` and `.java` files) and performs a `git blame` on these files in order to match tests written to the developers that wrote them. 
 The owner of the method name of the test is considered the developer that wrote it.
+Note that since this script makes use of git, the file will need to be committed before it is counted. This will always look on the currently checked out branch.
 
 ## Dependencies
 
-* [python 2.7.10](https://www.python.org/downloads/release/python-2710/) (for running the script)
-* [git 2.6.1](https://git-scm.com/) (for finding the blame information for a given file)
+* [python 2.7.9](https://www.python.org/downloads/release/python-2710/) (for running the script)
+* [git 2.5.3](https://git-scm.com/) (for finding the blame information for a given file)
 
-The script should run on any operating system containing these two dependencies.
+The script should run on any operating system containing these two dependencies. The script may operate on lower python or git versions, but there is a certain of amount of buyer beware here.
 
 ## Usage
 
-1. Run the Python script from your repository:
+1. Run the Python setup.py from this repository:
 
     ```shell
-    > python testinggame.py
+    > python setup.py install
     ```
 
-2. Mention that you write most unit units of your project on every meeting (no, don’t do that).
+2. Run  the testing game script from your repository (or subdirectory):
+
+    ```shell
+    > testinggame
+    ```
+
+3. Mention that you write most unit units of your project on every meeting (no, don’t do that).
 
 
 ## Contribution

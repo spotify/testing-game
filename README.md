@@ -33,13 +33,19 @@ The script should run on any operating system containing these two dependencies.
 
 ## Usage
 
-1. Run the Python script from your repository:
+1. Run the Python setup.py from this repository:
 
     ```shell
-    > python testinggame.py
+    > python setup.py install
     ```
 
-2. Mention that you write most unit units of your project on every meeting (no, don’t do that).
+2. Run  the testing game script from your repository (or subdirectory):
+
+    ```shell
+    > testinggame
+    ```
+
+3. Mention that you write most unit units of your project on every meeting (no, don’t do that).
 
 
 ## Contribution

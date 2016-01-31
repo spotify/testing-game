@@ -207,7 +207,8 @@ def _find_git_status(directory, xctestsuperclasses):
                                                       names)
                         if fileextension in python_extensions:
                             names = _find_python_tests(blame_lines,
-                                                       names)
+                                                       names,
+                                                       source)
                 except:
                     'Could not open file: ' + absfile
     return names

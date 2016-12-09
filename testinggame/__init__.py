@@ -102,6 +102,36 @@ def _find_java_tests(blame_lines, names):
             next_is_test = blame_code_nospaces.startswith('@Test')
     return names
 
+def _find_cs_tests(blame_lines, names):
+    """
+    Finds the number of C# test cases per user. This will find nUnit tests
+    with the [Test] attribute
+
+    Args:
+        blame_lines: An array where each index is a string containing the git
+        blame line.
+        names: The current dictionary containing the usernames as a key and the
+        number of tests as a value.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
+    next_is_test = False
+    for blame_line in blame_lines:
+        separator = blame_line.find(')')
+        blame_code_nospaces = blame_line[separator+1:]
+        blame_code_nospaces = blame_code_nospaces.replace(' ', '')
+        blame_code_nospaces = blame_code_nospaces.replace('\t', '')
+        if next_is_test and blame_code_nospaces.find('{') != -1:
+            next_is_test = False
+        elif next_is_test and blame_code_nospaces.startswith('public'):
+            name = _find_name_from_blame(blame_line)
+            name_count = names.get(name, 0)
+            names[name] = name_count + 1
+            next_is_test = False
+        else:
+            next_is_test = next_is_test or blame_code_nospaces.startswith('[Test]')
+    return names
 
 def _find_boost_tests(blame_lines, names):
     """
@@ -177,10 +207,12 @@ def _find_git_status(directory, xctestsuperclasses):
     java_extensions = ['.java']
     cpp_extensions = ['.cpp', '.mm']
     python_extensions = ['.py']
+    cs_extensions = ['.cs']
     valid_extensions = objc_extensions
     valid_extensions.extend(java_extensions)
     valid_extensions.extend(cpp_extensions)
     valid_extensions.extend(python_extensions)
+    valid_extensions.extend(cs_extensions)
     for root, dirs, files in os.walk(directory):
         for name in files:
             filename, fileextension = os.path.splitext(name)
@@ -209,6 +241,9 @@ def _find_git_status(directory, xctestsuperclasses):
                             names = _find_python_tests(blame_lines,
                                                        names,
                                                        source)
+                        if fileextension in cs_extensions:
+                            names = _find_cs_tests(blame_lines,
+                                                   names)
                 except:
                     'Could not open file: ' + absfile
     return names

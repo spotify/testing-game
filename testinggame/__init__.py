@@ -204,7 +204,7 @@ def _find_git_status(directory, xctestsuperclasses):
     """
     names = {}
     objc_extensions = ['.m', '.mm']
-    java_extensions = ['.java']
+    java_extensions = ['.java', '.kt']
     cpp_extensions = ['.cpp', '.mm']
     python_extensions = ['.py']
     cs_extensions = ['.cs']

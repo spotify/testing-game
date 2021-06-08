@@ -159,7 +159,6 @@ def _find_boost_tests(blame_lines, names):
             names[name] = name_count + 1
     return names
 
-
 def _find_python_tests(blame_lines, names, source):
     """
     Finds the number of python test cases per user.
@@ -179,6 +178,30 @@ def _find_python_tests(blame_lines, names, source):
         blame_code_nospaces = blame_code_nospaces.replace(' ', '')
         blame_code_nospaces = blame_code_nospaces.replace('\t', '')
         if blame_code_nospaces.startswith('deftest'):
+            name = _find_name_from_blame(blame_line)
+            name_count = names.get(name, 0)
+            names[name] = name_count + 1
+    return names
+
+def _find_php_tests(blame_lines, names):
+    """
+    Finds the number of php test cases per user. Does not consider data providers
+
+    Args:
+        blame_lines: An array where each index is a string containing the git
+        blame line.
+        names: The current dictionary containing the usernames as a key and the
+        number of tests as a value.
+    Returns:
+        A dictionary built off the names argument containing the usernames as a
+        key and the number of tests as a value.
+    """
+    for blame_line in blame_lines:
+        separator = blame_line.find(')')
+        blame_code_nospaces = blame_line[separator+1:]
+        blame_code_nospaces = blame_code_nospaces.replace(' ', '')
+        blame_code_nospaces = blame_code_nospaces.replace('\t', '')
+        if blame_code_nospaces.startswith('publicfunctiontest'):
             name = _find_name_from_blame(blame_line)
             name_count = names.get(name, 0)
             names[name] = name_count + 1
@@ -208,11 +231,13 @@ def _find_git_status(directory, xctestsuperclasses):
     cpp_extensions = ['.cpp', '.mm']
     python_extensions = ['.py']
     cs_extensions = ['.cs']
+    php_extensions = ['.php']
     valid_extensions = objc_extensions
     valid_extensions.extend(java_extensions)
     valid_extensions.extend(cpp_extensions)
     valid_extensions.extend(python_extensions)
     valid_extensions.extend(cs_extensions)
+    valid_extensions.extend(php_extensions)
     for root, dirs, files in os.walk(directory):
         for name in files:
             filename, fileextension = os.path.splitext(name)
@@ -244,6 +269,9 @@ def _find_git_status(directory, xctestsuperclasses):
                         if fileextension in cs_extensions:
                             names = _find_cs_tests(blame_lines,
                                                    names)
+                        if fileextension in php_extensions:
+                           names = _find_php_tests(blame_lines,
+                                                      names)
                 except:
                     'Could not open file: ' + absfile
     return names
